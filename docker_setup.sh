@@ -102,9 +102,11 @@ sudo rm -rf /var/run/netns/bess
 
 # Run bessd
 docker run --name bess -td --restart unless-stopped \
+        --hostname `hostname` \
 	--cpuset-cpus=12-13 \
 	--ulimit memlock=-1 -v /dev/hugepages:/dev/hugepages \
 	-v "$PWD/conf":/opt/bess/bessctl/conf \
+	-v "$PWD/conf":/bin/conf \
 	-p $gui_port:$gui_port \
 	$PRIVS \
 	$DEVICES \
