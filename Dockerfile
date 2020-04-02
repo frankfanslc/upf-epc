@@ -31,7 +31,7 @@ RUN mkdir linux && \
 
 # dpdk
 ARG DPDK_URL='http://dpdk.org/git/dpdk-stable'
-ARG DPDK_VER='v19.11'
+ARG DPDK_VER='v19.11.1'
 ENV DPDK_DIR="/dpdk"
 RUN git clone -b $DPDK_VER -q --depth 1 $DPDK_URL $DPDK_DIR
 
@@ -50,7 +50,7 @@ RUN sed -ri 's,(IGB_UIO=).*,\1n,' config/common_linux* && \
     make $MAKEFLAGS RTE_MACHINE=$RTE_MACHINE EXTRA_CFLAGS="-g -w -fPIC -DALLOW_EXPERIMENTAL_API"
 
 WORKDIR /
-ARG BESS_COMMIT=master
+ARG BESS_COMMIT=trozet-update_dpdk
 ARG MARCH=native
 RUN apt-get update && apt-get install -y wget unzip ca-certificates git
 RUN wget -qO bess.zip https://github.com/NetSys/bess/archive/${BESS_COMMIT}.zip && unzip bess.zip
@@ -59,7 +59,7 @@ COPY core/modules/ core/modules/
 COPY core/utils/ core/utils/
 COPY protobuf/ protobuf/
 COPY patches/bess patches
-RUN cp -a ${DPDK_DIR} deps/dpdk-19.11 && \
+RUN cp -a ${DPDK_DIR} deps/dpdk-19.11.1 && \
     cat patches/* | patch -p1
 RUN CXXARCHFLAGS="-march=$MARCH -Werror=format-truncation -Warray-bounds -fbounds-check -fno-strict-overflow -fno-delete-null-pointer-checks -fwrapv" ./build.py bess && \
     cp bin/bessd /bin && \
